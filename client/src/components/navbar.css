@@ -1,0 +1,206 @@
+/* Navbar.css */
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+    z-index: 1050;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    font-size: 20px;
+    color: #333;
+}
+
+.navbar-links {
+    display: flex;
+    list-style: none;
+    gap: 20px;
+}
+
+.navbar-links li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+.navbar-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.login-link {
+    text-decoration: none;
+    color: #333;
+}
+
+.signup-button {
+    padding: 5px 10px;
+    background-color: orange;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Mobile Menu */
+
+.navbar-menu {
+    display: none;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.menu-item {
+    padding: 10px 0;
+    text-decoration: none;
+    color: #555;
+}
+
+.menu-item.highlight {
+    color: orange;
+}
+
+.menu-item.danger {
+    color: red;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+    .navbar-links,
+    .navbar-actions {
+        display: none;
+    }
+    .navbar-menu {
+        display: flex;
+    }
+}
+
+/* Remove custom flexbox and centering from .navbar and .navbar-brand */
+
+.navbar-brand span {
+    color: #ffe9c7 !important;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+}
+
+.navbar-nav .nav-link {
+    color: #ffe9c7 !important;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.navbar-nav .nav-link:hover, .navbar-nav .nav-link.active {
+    color: #b07d3c !important;
+}
+
+.btn-outline-primary {
+    border-color: #b07d3c;
+    color: #b07d3c;
+    background: transparent;
+}
+.btn-outline-primary:hover {
+    background: #b07d3c;
+    color: #fffbe9;
+}
+
+/* Social icons */
+.fs-5, .fs-4 {
+    font-size: 1.25rem !important;
+    color: #b07d3c !important;
+    transition: color 0.2s;
+}
+.text-primary.fs-5, .text-primary.fs-4 {
+    color: #b07d3c !important;
+}
+.text-info.fs-5, .text-info.fs-4 {
+    color: #ffe9c7 !important;
+}
+.text-danger.fs-5, .text-danger.fs-4 {
+    color: #a0522d !important;
+}
+
+@media (max-width: 991px) {
+    .navbar-nav {
+        gap: 0 !important;
+    }
+}
+
+.mobile-navbar-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255,255,255,0.98);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  box-shadow: -2px 0 24px 0 rgba(44, 103, 119, 0.08);
+}
+
+.mobile-navbar-close {
+  background: none;
+  border: none;
+  font-size: 2.5rem;
+  color: #2b6777;
+  margin: 18px 24px 0 0;
+  cursor: pointer;
+  align-self: flex-end;
+  transition: color 0.2s;
+}
+.mobile-navbar-close:hover {
+  color: #52ab98;
+}
+
+.mobile-navbar-menu {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px;
+  gap: 28px;
+}
+
+.mobile-navbar-menu a {
+  font-size: 1.3rem;
+  color: #2b6777;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.mobile-navbar-menu a:hover {
+  color: #52ab98;
+}
+
+.mobile-navbar-socials {
+  display: flex;
+  gap: 18px;
+  margin-top: 32px;
+  align-items: center;
+}
+
+@media (min-width: 992px) {
+  .mobile-navbar-overlay {
+    display: none !important;
+  }
+}
+
+.navbar-transparent {
+  background: transparent !important;
+  backdrop-filter: blur(18px);
+  box-shadow: 0 6px 32px 0 rgba(120,90,60,0.10);
+  border-bottom: 1.5px solid rgba(176,125,60,0.18);
+  transition: background 0.3s, backdrop-filter 0.3s, box-shadow 0.3s;
+}
