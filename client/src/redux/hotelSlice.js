@@ -1,14 +1,20 @@
-import { createSlice } from '@reduxjs/toolkit'
+ import { createSlice } from '@reduxjs/toolkit';
 
+ const hotelSlice = createSlice({
+     name: 'hotel',
+     initialState: {
+         hotelDetail: null,
+         roomList: [],
+     },
+     reducers: {
+         setHotelDetail: (state, action) => {
+             state.hotelDetail = action.payload;
+         },
+         setRoomList: (state, action) => {
+             state.roomList = action.payload;
+         },
+     },
+ });
 
-const hotelSlice = createSlice({
-    name: 'hotel',
-    initialState: {},
-    reducers: {
-        setHotel: (state, action) => {
-            state.hotelDetail = action.payload;
-        }
-    }
-})
-export const { setHotel } = hotelSlice.actions;
-export default hotelSlice.reducer;
+ export const { setHotelDetail, setRoomList } = hotelSlice.actions;
+ export default hotelSlice.reducer;

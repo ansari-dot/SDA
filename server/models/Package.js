@@ -1,9 +1,18 @@
 import mongoose from 'mongoose';
 
 const typeSchema = new mongoose.Schema({
+    companyName: {
+        type: String,
+        required: true
+    },
     packageType: {
         type: String,
         enum: ['Luxury', 'Family', 'Customized'],
+        required: true,
+    },
+    destination: {
+        type: String,
+        required: true,
     },
     price: {
         type: Number,
@@ -17,9 +26,23 @@ const typeSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    TravelData: {
-        type: String,
+    travelDate: {
+        type: Date,
         required: true,
+    },
+    duration: {
+        type: Number, // in days
+    },
+    numberOfPeople: {
+        type: Number,
+    },
+    rating: {
+        type: Number,
+        min: 0,
+        max: 5,
+    },
+    facilities: {
+        type: [String],
     },
 });
 
@@ -30,10 +53,6 @@ const packageSchema = new mongoose.Schema({
         required: true,
     },
     package: [typeSchema],
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
 }, { timestamps: true });
 
 const Package = mongoose.model('Package', packageSchema);

@@ -1,50 +1,25 @@
-import mongoose from 'mongoose';
-
+// models/Hotel.js
+import mongoose from 'mongoose'
 const hotelSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+    },
     name: {
         type: String,
         required: true,
-        unique: true,
-        minlength: 3,
     },
-    manager: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
-    },
-    location: {
-        type: String,
-        required: true,
-    },
+    location: String,
     rating: {
         type: Number,
-        required: true,
-        min: 0,
+        min: 1,
         max: 5,
     },
     facilities: [String],
-    images: {
-        type: String,
-        required: true,
-    },
-    rooms: [{
-        roomType: {
-            type: String,
-            required: true,
-        },
-        pricePerNight: {
-            type: Number,
-            required: true,
-        },
-        numberOfGuest: {
-            type: Number,
-            required: true,
-        },
-    }, ],
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
+    images: [String],
+    description: { type: String },
 }, { timestamps: true });
 
-export default mongoose.model('Hotel', hotelSchema);
+const hotel = mongoose.model('hotel', hotelSchema);
+export default hotel;

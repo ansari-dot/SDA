@@ -10,7 +10,7 @@ export class User {
 
             if (!name || !email || !password || !role || !gender) {
                 return res.status(400).json({
-                    message: 'Please fill in all fields'
+                    message: "Please fill in all fields",
                 });
             }
 
@@ -18,16 +18,25 @@ export class User {
                 const existingUser = await UserModel.findOne({ email });
                 if (existingUser) {
                     return res.status(400).json({
-                        message: "User already exists"
+                        message: "User already exists",
                     });
                 }
+
+                if (role === "Admin") {
+                    const existingAdmin = await UserModel.findOne({ role: "Admin" });
+                    if (existingAdmin) {
+                        return res.status(400).json({
+                            message: "An Admin already exists",
+                        });
+                    }
+                }
+
                 const saltRounds = 10;
                 const hashPassword = await bcrypt.hash(password, saltRounds);
-                // for profile photo
-                // For profile photo
+
                 const maleProfile = `https://avatar.iran.liara.run/public/boy?username=${name}`;
                 const femaleProfile = `https://avatar.iran.liara.run/public/girl?username=${name}`;
-                const profilePhoto = gender === 'male' ? maleProfile : femaleProfile;
+                const profilePhoto = gender === "male" ? maleProfile : femaleProfile;
 
                 const newUser = new UserModel({
                     name,
@@ -41,30 +50,31 @@ export class User {
                 await newUser.save();
 
                 return res.status(201).json({
-                    message: 'User registered successfully',
+                    message: "User registered successfully",
                     user: {
                         id: newUser._id,
                         name: newUser.name,
                         email: newUser.email,
                         role: newUser.role,
-                        profilePhoto: profilePhoto
-                    }
+                        profilePhoto: profilePhoto,
+                    },
                 });
-
             } catch (error) {
-                console.error(error);
+                console.error("Registration error:", error);
                 return res.status(500).json({
-                    message: 'Something went wrong while registering'
+                    message: "Something went wrong while registering",
+                    error: error.message,
                 });
             }
         }
         // a method that is used to login the user
     async login(req, res) {
+        try {
             const { email, password } = req.body;
 
             if (!email || !password) {
                 return res.status(400).json({
-                    message: 'Please fill in all fields'
+                    message: "Please fill in all fields",
                 });
             }
 
@@ -72,30 +82,52 @@ export class User {
 
             if (!existingUser) {
                 return res.status(400).json({
-                    message: 'User not found'
+                    message: "User not found",
                 });
             }
-            const isValidPassword = await bcrypt.compare(password, existingUser.password);
+
+            const isValidPassword = await bcrypt.compare(
+                password,
+                existingUser.password
+            );
 
             if (!isValidPassword) {
                 return res.status(400).json({
-                    message: 'Invalid password'
+                    message: "Invalid password",
                 });
             }
 
-            const token = jwt.sign({ id: existingUser._id }, process.env.SECRET_KEY, { expiresIn: '1h' });
+            const token = jwt.sign({ id: existingUser._id },
+                process.env.SECRET_KEY, { expiresIn: "1h" }
+            );
 
-            return res.status(200).cookie("token", token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true }).json({
-                message: "user login successfully",
-                user: {
-                    id: existingUser._id,
-                    name: existingUser.name,
-                    email: existingUser.email,
-                    role: existingUser.role
-                }
-            })
+            // Use a default avatar if profilePhoto is missing
+            const profilePhoto =
+                existingUser.profilePhoto ||
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                  existingUser.name
+                )}&background=${
+                  existingUser.role === "female" ? "ff69b4" : "0d6efd"
+                }&color=fff`;
+
+            return res
+                .status(200)
+                .cookie("token", token, {
+                    maxAge: 24 * 60 * 60 * 1000,
+                    httpOnly: true,
+                })
+                .json({
+                    message: "user login successfully",
+                    user: existingUser,
+                    token,
+                });
+        } catch (error) {
+            console.error("Login error:", error);
+            return res.status(500).json({ message: "Internal server error" });
         }
-        // sent otp to reset the password
+    }
+
+    // sent otp to reset the password
     async sentOtp(req, res) {
         try {
             const { email } = req.body;
@@ -181,4 +213,48 @@ export class User {
         }
     }
 
+    // change ar update the profile
+    async updateProfile(req, res) {
+        const { name, email, password } = req.body;
+        const user_id = req.user;
+
+        if (!name || !email || !password) {
+            return res.status(400).json({ message: 'Please fill all the fields' });
+        }
+
+        try {
+            const user = await UserModel.findById(user_id);
+
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            // Update user fields
+            user.name = name;
+            user.email = email;
+            user.password = hashedPassword;
+
+            await user.save();
+
+            return res.status(200).json({ message: 'Profile updated successfully' });
+        } catch (error) {
+            console.error('Error in updateProfile:', error);
+            return res.status(500).json({ message: 'Something went wrong' });
+        }
+    }
+    async logout(req, res) {
+        try {
+            res.clearCookie("token", {
+                httpOnly: true,
+                sameSite: "Lax",
+                secure: false,
+            });
+
+            return res.status(200).json({ message: "Logged out successfully" });
+        } catch (err) {
+            return res.status(500).json({ message: "Logout failed", error: err.message });
+        }
+    }
 }

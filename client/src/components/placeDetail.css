@@ -1,149 +1,74 @@
-.placedetail-root {
-  background: #f7f9fa;
-  min-height: 100vh;
-  padding: 0;
-}
-.placedetail-backbtn {
-  margin: 24px 0 24px 24px;
-  background: #fff;
-  color: #21747b;
-  border: none;
-  border-radius: 8px;
-  font-size: 1.18rem;
-  font-weight: 600;
-  padding: 10px 28px 10px 18px;
-  box-shadow: 0 2px 12px 0 rgba(44,103,119,0.08);
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.placedetail-backbtn:hover {
-  background: #e3e7ed;
-  color: #17444a;
-}
-.placedetail-main {
-  display: flex;
-  gap: 48px;
-  max-width: 1800px;
-  margin: 0 auto;
-  padding: 0 24px 48px 24px;
-  align-items: flex-start;
-  flex-wrap: wrap;
-}
-.placedetail-imgcol {
-  flex: 1 1 600px;
-  min-width: 340px;
-  max-width: 900px;
-  display: flex;
-  align-items: flex-start;
-}
-.placedetail-img {
-  width: 100%;
-  max-width: 900px;
-  height: 480px;
-  object-fit: cover;
-  border-radius: 18px;
-  box-shadow: 0 8px 32px 0 rgba(44,103,119,0.13);
-  background: #e3e7ed;
-}
-.placedetail-infocol {
-  flex: 1 1 400px;
-  min-width: 320px;
-  max-width: 700px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  padding: 32px 0 0 0;
-}
-.placedetail-region-badge {
-  display: inline-block;
-  background: #21747b;
-  color: #fff;
-  font-size: 1.05rem;
-  font-weight: 700;
-  border-radius: 18px;
-  padding: 7px 22px;
-  margin-bottom: 18px;
-  box-shadow: 0 2px 8px 0 rgba(33,116,123,0.10);
-}
-.placedetail-title {
-  font-size: 2.7rem;
-  font-weight: 800;
-  color: #21747b;
-  margin-bottom: 18px;
-  font-family: 'Poppins', 'Inter', Arial, sans-serif;
-}
-.placedetail-desc {
-  font-size: 1.25rem;
-  color: #444;
-  margin-bottom: 32px;
-  margin-top: 8px;
-}
-.placedetail-divider {
-  border: none;
-  border-top: 1.5px solid #e3e7ed;
-  margin: 18px 0 28px 0;
-}
-.placedetail-action-row {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 32px;
-}
-.placedetail-explorebtn {
-  background: #21747b;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  padding: 18px 38px;
-  font-size: 1.25rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s;
-  box-shadow: 0 2px 12px 0 rgba(44,103,119,0.10);
-}
-.placedetail-explorebtn:hover {
-  background: #17444a;
-  box-shadow: 0 4px 18px 0 rgba(44,103,119,0.18);
-}
+  .hero-section {
+    position: relative;
+    overflow: hidden;
+  }
 
-@media (max-width: 1200px) {
-  .placedetail-main {
-    flex-direction: column;
-    gap: 32px;
-    padding: 0 8px 32px 8px;
+  .hero-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.3;
   }
-  .placedetail-imgcol, .placedetail-infocol {
-    max-width: 100%;
-    min-width: 0;
+
+  .section-title {
+    position: relative;
+    display: inline-block;
   }
-  .placedetail-img {
-    height: 320px;
-    max-width: 100%;
+
+  .section-title::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border-radius: 2px;
   }
-  .placedetail-infocol {
-    padding: 0;
+
+  .glassmorphism {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
-}
-@media (max-width: 700px) {
-  .placedetail-title {
-    font-size: 1.5rem;
+
+  .btn-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    transition: all 0.3s ease;
   }
-  .placedetail-img {
-    height: 180px;
+
+  .btn-gradient:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
   }
-  .placedetail-explorebtn {
-    width: 100%;
-    padding: 14px 0;
-    font-size: 1.05rem;
+
+  .card {
+    transition: all 0.3s ease;
   }
-  .placedetail-main {
-    gap: 18px;
-    padding: 0 2px 18px 2px;
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
   }
-  .placedetail-action-row {
-    justify-content: center;
+
+  .fade-in {
+    animation: fadeIn 1s ease-out;
   }
-} 
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }

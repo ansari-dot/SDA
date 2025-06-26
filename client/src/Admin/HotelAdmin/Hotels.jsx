@@ -1,145 +1,135 @@
+/*
 import React, { useState } from "react";
 import axios from "axios";
+import CompanyAdd from "./CompanyAdd";
+import RoomAdd from "./RoomAdd";
 import "./hotels.css";
 
-export default function Hotels() {
+const Hotels = () => {
   const [formData, setFormData] = useState({
     name: "",
     location: "",
-    pricePerNight: "",
-    numberOfGuest: "",
+    rating: "",
     facilities: [],
+    rooms: [
+      {
+        roomType: "",
+        pricePerNight: "",
+        numberOfGuest: "",
+        numberOfBeds: "",
+      },
+    ],
+    loading: false,
   });
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  const [images, setImages] = useState([]);
+  const [previewImages, setPreviewImages] = useState([]);
 
-    if (type === "checkbox") {
-      if (checked) {
-        setFormData({
-          ...formData,
-          facilities: [...formData.facilities, value],
-        });
-      } else {
-        setFormData({
-          ...formData,
-          facilities: formData.facilities.filter((f) => f !== value),
-        });
-      }
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
+  const showNotification = (message, type) => {
+    const notification = document.createElement("div");
+    notification.className = `hotel-notification ${type}`;
+    notification.innerHTML =
+      type === "success"
+        ? `<i class='bi bi-check-circle'></i> ${message}`
+        : `<i class='bi bi-exclamation-circle'></i> ${message}`;
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+      notification.classList.add("show");
+      setTimeout(() => {
+        notification.classList.remove("show");
+        setTimeout(() => {
+          document.body.removeChild(notification);
+        }, 300);
+      }, 3000);
+    }, 100);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    /*
+    setFormData({ ...formData, loading: true });
+
+    const data = new FormData();
+    data.append("name", formData.name);
+    data.append("location", formData.location);
+    data.append("rating", formData.rating);
+    data.append("manager", "USER_ID_HERE"); // Replace later
+    formData.facilities.forEach((f) => data.append("facilities[]", f));
+    formData.rooms.forEach((room, i) => {
+      data.append(`rooms[${i}][roomType]`, room.roomType);
+      data.append(`rooms[${i}][pricePerNight]`, room.pricePerNight);
+      data.append(`rooms[${i}][numberOfGuest]`, room.numberOfGuest);
+      data.append(`rooms[${i}][numberOfBeds]`, room.numberOfBeds);
+    });
+    images.forEach((img) => data.append("images", img));
+
     try {
-      await axios.post("http://localhost:5000/api/hotels", hotelData);
-      alert("Hotel saved successfully!");
+      await axios.post("http://localhost:2000/api/hotel/add", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
+
       setFormData({
         name: "",
         location: "",
-        pricePerNight: "",
-        numberOfGuest: "",
+        rating: "",
         facilities: [],
+        rooms: [
+          {
+            roomType: "",
+            pricePerNight: "",
+            numberOfGuest: "",
+            numberOfBeds: "",
+          },
+        ],
+        loading: false,
       });
+      setImages([]);
+      setPreviewImages([]);
+      showNotification("Hotel saved successfully!", "success");
     } catch (err) {
       console.error(err);
-      alert("Error saving hotel.");
+      showNotification("Error saving hotel", "error");
+      setFormData({ ...formData, loading: false });
     }
-      */
   };
 
   return (
-    <div>
-      <h1 style={{ marginBottom: "24px" }}>Add New Hotel</h1>
-      <form className="hotel-form" onSubmit={handleSubmit}>
-        <div className="hotel-row">
-          <div className="hotel-col">
-            <label>Hotel Name</label>
-            <input
-              type="text"
-              name="name"
-              placeholder="Hotel Name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="hotel-col">
-            <label>City/Location</label>
-            <input
-              type="text"
-              name="location"
-              placeholder="City or Location"
-              value={formData.location}
-              onChange={handleChange}
-              required
-            />
-          </div>
-        </div>
-        <div className="hotel-row">
-          <div className="hotel-col">
-            <label>Price Per Night</label>
-            <input
-              type="number"
-              name="pricePerNight"
-              placeholder="Price per night (USD)"
-              value={formData.pricePerNight}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="hotel-col">
-            <label>Guests</label>
-            <input
-              type="number"
-              name="numberOfGuest"
-              placeholder="Number of guests"
-              value={formData.numberOfGuest}
-              onChange={handleChange}
-              required
-            />
-          </div>
-        </div>
-        <div className="hotel-row">
-          <div className="hotel-col-full">
-            <label>Facilities</label>
-            <div className="hotel-facilities">
-              {[
-                "WiFi",
-                "Breakfast",
-                "Swimming Pool",
-                "Spa",
-                "Gym",
-                "Parking",
-                "Restaurant",
-                "Room Service",
-              ].map((facility) => (
-                <label key={facility}>
-                  <input
-                    type="checkbox"
-                    name="facilities"
-                    value={facility}
-                    checked={formData.facilities.includes(facility)}
-                    onChange={handleChange}
-                  />{" "}
-                  {facility}
-                </label>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="hotel-actions">
-          <button type="submit" className="hotel-save-btn">
-            Save Hotel
+    <div className="hotels-container">
+      <div
+        className="hotel-header"
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "20px",
+        }}>
+        <h1 style={{ fontSize: "2rem", fontWeight: "bold" }}>
+          Hotel Management
+        </h1>
+        <div
+          className="hotel-header-actions"
+          style={{ display: "flex", gap: "10px" }}>
+          <button className="hotel-btn-secondary">
+            <i className="bi bi-list"></i> View All Hotels
+          </button>
+          <button className="hotel-btn-primary">
+            <i className="bi bi-plus"></i> Add New Hotel
           </button>
         </div>
-      </form>
+      </div>
+      <CompanyAdd
+        formData={formData}
+        setFormData={setFormData}
+        images={images}
+        setImages={setImages}
+        previewImages={previewImages}
+        setPreviewImages={setPreviewImages}
+        handleSubmit={handleSubmit}
+      />
+      <RoomAdd formData={formData} setFormData={setFormData} />
     </div>
   );
-}
+};
+
+export default Hotels; */

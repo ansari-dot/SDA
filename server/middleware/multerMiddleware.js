@@ -6,7 +6,6 @@ const uploadPath = 'uploads/';
 if (!fs.existsSync(uploadPath)) {
     fs.mkdirSync(uploadPath);
 }
-
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, uploadPath);
@@ -34,7 +33,7 @@ const upload = multer({
     storage,
     fileFilter,
     limits: {
-        fileSize: 5 * 1024 * 1024,
+        fileSize: 30 * 1024 * 1024,
     },
 });
 

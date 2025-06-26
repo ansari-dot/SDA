@@ -3,7 +3,7 @@ import User from '../models/User.js'
 export class Places {
     // to add all the places
     async addPlaces(req, res) {
-            const { name, location, description, bestTimeToVisit, activities } = req.body;
+            const { location, placeName, description, fullDetails, image, rating, bestTime, review } = req.body
             const userid = req.user;
 
             try {
@@ -15,14 +15,17 @@ export class Places {
                 const imagePaths = req.files.map(file => file.path);
 
                 const newPlace = new TouristPlace({
-                    name,
+                    placeName,
                     location,
                     description,
-                    images: imagePaths,
-                    bestTimeToVisit,
-                    activities,
+                    fullDetails,
+                    image: imagePaths,
+                    rating,
+                    bestTime,
+                    review,
                     user: userid
                 });
+
 
                 await newPlace.save();
 

@@ -14,6 +14,10 @@ import PlaceDetail from "./components/PlaceDetail.jsx";
 import HotelDetail from "./components/HotelDetail.jsx";
 import TourAdmin from "./Admin/TourAdmin/DashboardLayout.jsx";
 import HotelAdmin from "./Admin/HotelAdmin/DashboardLayout.jsx";
+import Admin from "./Admin/Admin/Admin.jsx";
+import PackageDetail from "./components/PackageDetail.jsx";
+import RoomList from "./Admin/HotelAdmin/RoomList.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
 const Router = () => {
   const location = useLocation();
   // Hide navbar/footer on login and signup
@@ -22,11 +26,14 @@ const Router = () => {
     "/signup",
     "/tour-admin",
     "/hotel-admin",
+    "/admin",
+    "/profile",
   ].includes(location.pathname);
   return (
     <div>
       {!hideNavFooter && <Navbar />}
       <Routes>
+        <Route path="/room" element={<RoomList />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/hotels" element={<HotelPage />} />
@@ -36,10 +43,13 @@ const Router = () => {
         <Route path="/blogs" element={<BlogPage />} />
         <Route path="/" element={<Home />} />
         <Route path="/place-detail" element={<PlaceDetail />} />
-        <Route path="/dh" element={<HotelDetail />} />
+        <Route path="/hotel/:hotelId" element={<HotelDetail />} />
+        <Route path="/package/:id" element={<PackageDetail />} />
         {/* dashboard here */}
         <Route path="/tour-admin" element={<TourAdmin />} />
         <Route path="/hotel-admin" element={<HotelAdmin />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
       {!hideNavFooter && <Footer />}
     </div>

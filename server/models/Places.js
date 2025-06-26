@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const touristPlaceSchema = new mongoose.Schema({
-    name: {
+    placeName: {
         type: String,
         required: true,
         trim: true
@@ -16,21 +16,20 @@ const touristPlaceSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    images: [{
+    fullDetails: {
         type: String,
-        required: true
-    }],
-    bestTimeToVisit: {
+        required: true,
+    },
+    image: {
         type: String,
         required: true
     },
-    activities: [{
+    bestTime: {
         type: String,
-        trim: true
-    }],
-    addedBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        required: true
+    },
+    review: {
+        type: String,
         required: true
     },
     createdAt: {

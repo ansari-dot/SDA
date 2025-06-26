@@ -1,159 +1,480 @@
 /* === General Dashboard Styles === */
-body, .dashboard-root {
-  background: #f7f9fa;
-  font-family: 'Inter', 'Poppins', Arial, sans-serif;
-  color: #222;
+
+.dashboard-overview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
 }
 
-.dashboard-root {
-  display: flex;
-  min-height: 100vh;
+.overview-card {
+    flex: 1 1 220px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 12px;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+
+.overview-card i {
+    font-size: 2rem;
+}
+
+.overview-card h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.overview-card p {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.overview-card.blue {
+    background-color: #0d6efd;
+}
+
+.overview-card.green {
+    background-color: #198754;
+}
+
+.overview-card.orange {
+    background-color: #fd7e14;
+}
+
+.overview-card.purple {
+    background-color: #6f42c1;
+}
+
+.dashboard-chart {
+    background: white;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+
+/* === Reset & Base Styles === */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    background: #f8fafc;
+    color: #1e293b;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+
+/* === Dashboard Container === */
+
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    background: #f8fafc;
+}
+
+
+/* === Loading State === */
+
+.dashboard-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: #f8fafc;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #e2e8f0;
+    border-top: 3px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.dashboard-loading p {
+    color: #64748b;
+    font-size: 16px;
+}
+
 
 /* === Sidebar === */
+
 .dashboard-sidebar {
-  width: 270px;
-  background: #fff;
-  border-right: 1.5px solid #ececec;
-  box-shadow: 2px 0 16px 0 rgba(44,103,119,0.04);
-  padding: 32px 0 0 0;
-  min-height: 100vh;
-  position: relative;
-  z-index: 2;
+    background: #fff;
+    box-shadow: 2px 0 12px rgba(67,179,106,0.06);
+    border-radius: 0 18px 18px 0;
+    padding: 32px 0 0 0;
+    min-height: 100vh;
+    color: #222;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.dashboard-profile-photo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.dashboard-profile-photo img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #43b36a;
+    background: #f7f9fa;
 }
 
 .dashboard-title {
-  font-size: 2rem;
-  font-weight: 800;
-  margin-left: 32px;
-  margin-bottom: 32px;
-  color: #0d6efd;
-  letter-spacing: 1px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: #43b36a;
+    text-align: center;
 }
 
 .dashboard-sidebar nav ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .dashboard-sidebar nav ul li {
-  padding: 14px 32px;
-  font-size: 1.13rem;
-  color: #222;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  cursor: pointer;
-  border-radius: 8px;
-  margin-bottom: 4px;
-  transition: background 0.2s, color 0.2s;
-  position: relative;
+    padding: 12px 28px;
+    color: #6c7a89;
+    font-weight: 600;
+    border-left: 4px solid transparent;
+    border-radius: 0 14px 14px 0;
+    margin-bottom: 4px;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .dashboard-sidebar nav ul li.active,
 .dashboard-sidebar nav ul li:hover {
-  background: #eaf3ff;
-  color: #0d6efd;
-  font-weight: 600;
+    background: #f7fafb;
+    border-left: 4px solid #43b36a;
+    color: #43b36a;
 }
 
-.dashboard-sidebar nav ul li.active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 8px;
-  bottom: 8px;
-  width: 4px;
-  border-radius: 4px;
-  background: #0d6efd;
+.dashboard-sidebar nav ul li i {
+    font-size: 1.2em;
+    color: #b2b2b2;
+    transition: color 0.2s;
 }
+
+.dashboard-sidebar nav ul li.active i,
+.dashboard-sidebar nav ul li:hover i {
+    color: #43b36a;
+}
+
+.dashboard-logout-btn {
+    width: calc(100% - 32px);
+    margin: 32px 16px 18px 16px;
+    padding: 10px 0;
+    background: #fff0f0;
+    color: #d32f2f;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.dashboard-logout-btn:hover {
+    background: #d32f2f;
+    color: #fff;
+}
+
+@media (max-width: 900px) {
+    .dashboard-sidebar {
+        min-width: 60px;
+        border-radius: 0;
+        padding: 18px 0 0 0;
+    }
+    .dashboard-title {
+        font-size: 1.1rem;
+        margin-left: 0;
+    }
+    .dashboard-profile-photo img {
+        width: 48px;
+        height: 48px;
+    }
+    .dashboard-sidebar nav ul li {
+        font-size: 1rem;
+        padding: 12px 18px 12px 12px;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 700px) {
+    .dashboard-sidebar {
+        min-width: 100%;
+        border-radius: 0;
+        padding: 8px 0 0 0;
+    }
+    .dashboard-title {
+        font-size: 1rem;
+        margin-bottom: 12px;
+    }
+}
+
 
 /* === Main Content === */
+
 .dashboard-main {
-  flex: 1;
-  padding: 36px 48px;
-  background: #f7f9fa;
-  overflow-x: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
-/* === Card/Table/Form Container === */
+
+/* === Main Header === */
+
+.main-header {
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.page-title h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.page-title p {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.action-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: #f8fafc;
+    border-radius: 10px;
+    color: #64748b;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.2s;
+    font-size: 16px;
+}
+
+.action-btn:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #ef4444;
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+}
+
+
+/* === Main Content Area === */
+
+.main-content {
+    flex: 1;
+    padding: 32px;
+    overflow-y: auto;
+    background: #f8fafc;
+}
+
+
+/* === Global Content Containers === */
+
 .tourpackage-form,
 .customers-table-wrapper,
 .bookings-table-wrapper,
 .destinations-table-wrapper,
 .settings-form {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 24px 0 rgba(44,103,119,0.07);
-  padding: 32px 28px 24px 28px;
-  margin-bottom: 32px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    border: 1px solid #f1f5f9;
+    padding: 24px;
+    margin-bottom: 24px;
+    transition: all 0.2s;
 }
 
-@media (max-width: 1100px) {
-  .dashboard-main {
-    padding: 18px 6vw;
-  }
-  .tourpackage-form,
-  .customers-table-wrapper,
-  .bookings-table-wrapper,
-  .destinations-table-wrapper,
-  .settings-form {
-    padding: 18px 6vw;
-  }
-}
-@media (max-width: 700px) {
-  .dashboard-sidebar {
-    width: 100vw;
-    min-width: 0;
-    border-right: none;
-    box-shadow: none;
-    padding: 18px 0 0 0;
-  }
-  .dashboard-main {
-    padding: 8px 2vw;
-  }
-  .dashboard-title {
-    margin-left: 12px;
-    font-size: 1.3rem;
-  }
+.tourpackage-form:hover,
+.customers-table-wrapper:hover,
+.bookings-table-wrapper:hover,
+.destinations-table-wrapper:hover,
+.settings-form:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
 }
 
-.dashboard-profile-photo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 18px;
-}
-.dashboard-profile-photo img {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #eaf3ff;
-  box-shadow: 0 2px 8px 0 rgba(13,110,253,0.10);
-  background: #f7f9fa;
+
+/* === Responsive Design === */
+
+@media (max-width: 1200px) {
+    .main-header {
+        padding: 20px 24px;
+    }
+
+    .main-content {
+        padding: 24px;
+    }
 }
 
-.dashboard-logout-btn {
-  width: calc(100% - 32px);
-  margin: 32px 16px 18px 16px;
-  padding: 12px 0;
-  background: #ffeaea;
-  color: #d32f2f;
-  border: none;
-  border-radius: 8px;
-  font-size: 1.08rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-  box-shadow: 0 2px 8px 0 rgba(211,47,47,0.06);
+@media (max-width: 768px) {
+    .dashboard-container {
+        flex-direction: column;
+    }
+
+    .main-header {
+        padding: 16px 20px;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+
+    .page-title h1 {
+        font-size: 20px;
+    }
+
+    .brand-text h1 {
+        font-size: 18px;
+    }
 }
-.dashboard-logout-btn:hover {
-  background: #d32f2f;
-  color: #fff;
+
+@media (max-width: 480px) {
+    .main-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .header-actions {
+        align-self: flex-end;
+    }
+
+    .main-content {
+        padding: 16px;
+    }
+
+    .tourpackage-form,
+    .customers-table-wrapper,
+    .bookings-table-wrapper,
+    .destinations-table-wrapper,
+    .settings-form {
+        padding: 16px;
+        border-radius: 12px;
+    }
+}
+
+
+/* === Custom Scrollbar === */
+
+.sidebar-nav::-webkit-scrollbar,
+.main-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track,
+.main-content::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb,
+.main-content::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover,
+.main-content::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+
+/* === Focus States === */
+
+.nav-item:focus,
+.logout-btn:focus,
+.action-btn:focus,
+.sidebar-toggle:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+
+/* === Animation for smooth transitions === */
+
+@media (prefers-reduced-motion: no-preference) {
+
+    .dashboard-sidebar,
+    .nav-item,
+    .logout-btn,
+    .action-btn,
+    .sidebar-toggle {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 }
