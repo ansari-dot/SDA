@@ -17,5 +17,9 @@ router.post('/user/sentOtp', (req, res) => userController.sentOtp(req, res));
 router.post('/user/verifyOtp', (req, res) => userController.verifyOtp(req, res));
 router.post('/user/resetPassword', (req, res) => userController.resetPassword(req, res));
 
+// List all users (admin only)
+router.get('/user/all', authorized, (req, res) => userController.listUsers(req, res));
+// Delete a user (admin only)
+router.delete('/user/:id', authorized, (req, res) => userController.deleteUser(req, res));
 
 export default router;

@@ -257,4 +257,26 @@ export class User {
             return res.status(500).json({ message: "Logout failed", error: err.message });
         }
     }
+
+    // List all users
+    static async listUsers(req, res) {
+        try {
+            const users = await UserModel.find({}, '-password -otp -otpExpiresAt');
+            res.status(200).json({ users });
+        } catch (err) {
+            res.status(500).json({ message: 'Error fetching users', error: err.message });
+        }
+    }
+
+    // Delete a user
+    static async deleteUser(req, res) {
+        try {
+            const { id } = req.params;
+            const user = await UserModel.findByIdAndDelete(id);
+            if (!user) return res.status(404).json({ message: 'User not found' });
+            res.status(200).json({ message: 'User deleted' });
+        } catch (err) {
+            res.status(500).json({ message: 'Error deleting user', error: err.message });
+        }
+    }
 }

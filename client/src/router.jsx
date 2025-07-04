@@ -14,10 +14,12 @@ import PlaceDetail from "./components/PlaceDetail.jsx";
 import HotelDetail from "./components/HotelDetail.jsx";
 import TourAdmin from "./Admin/TourAdmin/DashboardLayout.jsx";
 import HotelAdmin from "./Admin/HotelAdmin/DashboardLayout.jsx";
-import Admin from "./Admin/Admin/Admin.jsx";
+import Admin from "./Admin/Admin/AdminDashboard.jsx";
 import PackageDetail from "./components/PackageDetail.jsx";
 import RoomList from "./Admin/HotelAdmin/RoomList.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
+import CompanyPackagesPage from './pages/CompanyPackagesPage';
+
 const Router = () => {
   const location = useLocation();
   // Hide navbar/footer on login and signup
@@ -50,6 +52,7 @@ const Router = () => {
         <Route path="/hotel-admin" element={<HotelAdmin />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/company/:companyName" element={<CompanyPackagesPage />} />
       </Routes>
       {!hideNavFooter && <Footer />}
     </div>

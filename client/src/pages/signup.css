@@ -27,7 +27,9 @@
 
   /* Base styling */
 
-  body {
+  body, .signup-root {
+      background: var(--background-dark);
+      color: var(--text-secondary);
       font-family: 'Outfit', sans-serif;
       margin: 0;
       padding: 0;
@@ -115,7 +117,7 @@
   /* Modern glass card styling */
 
   .card {
-      background: var(--glass-bg);
+      background: var(--jungle-green-2);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
@@ -203,10 +205,10 @@
       min-height: 54px;
       font-size: 1rem;
       padding: 0.75rem 1.25rem;
-      border: 2px solid rgba(203, 213, 225, 0.4);
-      background-color: rgba(255, 255, 255, 0.7);
+      border: 1px solid var(--primary-yellow);
+      background-color: var(--jungle-green-3);
       transition: all var(--transition-fast);
-      color: var(--text-primary);
+      color: var(--text-secondary);
       font-family: 'Outfit', sans-serif;
       backdrop-filter: blur(5px);
       -webkit-backdrop-filter: blur(5px);
@@ -318,14 +320,14 @@
   /* Submit button with glass effect */
 
   .btn-primary {
-      background: var(--secondary-gradient);
+      background: var(--button-yellow);
       border: none;
       border-radius: var(--border-radius-md);
       font-weight: 600;
       padding: 0.9rem 2.5rem;
       font-size: 1.1rem;
       letter-spacing: 0.5px;
-      color: white;
+      color: var(--button-text);
       box-shadow: 0 12px 24px -6px rgba(56, 189, 248, 0.35);
       transition: all var(--transition-medium);
       position: relative;

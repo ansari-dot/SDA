@@ -30,6 +30,13 @@ const UserSchema = new mongoose.Schema({
     },
     otp: { type: String },
     otpExpiresAt: { type: Date },
+    notifications: [
+        {
+            message: { type: String, required: true },
+            type: { type: String, enum: ['info', 'success', 'error'], default: 'info' },
+            date: { type: Date, default: Date.now },
+        }
+    ],
 }, { timestamps: true });
 
 export default mongoose.model('User', UserSchema);

@@ -17,6 +17,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AddRoom from "./AddRoom";
 import axios from "axios";
+import Modal from 'react-modal';
 
 const API_BASE_URL = "http://localhost:2000"; // Use environment variable
 
@@ -29,6 +30,10 @@ const HotelDisplay = () => {
   const [isLoadingRooms, setIsLoadingRooms] = useState({});
   const [roomFetchErrors, setRoomFetchErrors] = useState({});
   const [retryCounts, setRetryCounts] = useState({});
+  const [editHotel, setEditHotel] = useState(null);
+  const [editRoom, setEditRoom] = useState(null);
+  const [editHotelData, setEditHotelData] = useState({});
+  const [editRoomData, setEditRoomData] = useState({});
 
   // Normalize image path (remove 'Uploads\' and convert backslashes to forward slashes)
   const normalizeImagePath = (imagePath) => {
@@ -168,6 +173,54 @@ const HotelDisplay = () => {
       (hotel.name?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
       (hotel.location?.toLowerCase() || "").includes(searchTerm.toLowerCase())
   );
+
+  // Edit hotel handlers
+  const openEditHotel = (hotel) => {
+    setEditHotel(hotel._id);
+    setEditHotelData({ ...hotel });
+  };
+  const closeEditHotel = () => {
+    setEditHotel(null);
+    setEditHotelData({});
+  };
+  const handleEditHotelChange = (e) => {
+    setEditHotelData({ ...editHotelData, [e.target.name]: e.target.value });
+  };
+  const submitEditHotel = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.patch(`${API_BASE_URL}/api/hotel/${editHotel}`, editHotelData, { withCredentials: true });
+      toast.success('Hotel updated');
+      closeEditHotel();
+      handleHotelData();
+    } catch {
+      toast.error('Failed to update hotel');
+    }
+  };
+
+  // Edit room handlers
+  const openEditRoom = (room) => {
+    setEditRoom(room._id);
+    setEditRoomData({ ...room });
+  };
+  const closeEditRoom = () => {
+    setEditRoom(null);
+    setEditRoomData({});
+  };
+  const handleEditRoomChange = (e) => {
+    setEditRoomData({ ...editRoomData, [e.target.name]: e.target.value });
+  };
+  const submitEditRoom = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.patch(`${API_BASE_URL}/api/room/${editRoom}`, editRoomData, { withCredentials: true });
+      toast.success('Room updated');
+      closeEditRoom();
+      handleHotelData();
+    } catch {
+      toast.error('Failed to update room');
+    }
+  };
 
   useEffect(() => {
     handleHotelData();
@@ -401,6 +454,13 @@ const HotelDisplay = () => {
                           <Trash2 size={16} />
                           <span>Delete</span>
                         </button>
+                        <button
+                          onClick={() => openEditHotel(hotel)}
+                          className="btn btn-secondary px-4 py-2 rounded-pill fw-medium d-flex align-items-center gap-2 shadow-sm hover-lift"
+                          aria-label={`Edit hotel ${hotel.name}`}>
+                          <X size={16} />
+                          <span>Edit</span>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -479,6 +539,12 @@ const HotelDisplay = () => {
                                       aria-label={`Delete room ${room.roomType}`}>
                                       <Trash2 size={16} />
                                     </button>
+                                    <button
+                                      onClick={() => openEditRoom(room)}
+                                      className="btn btn-secondary btn-sm"
+                                      aria-label={`Edit room ${room.roomType}`}>
+                                      <X size={16} />
+                                    </button>
                                   </div>
 
                                   <div className="d-flex flex-wrap align-items-center gap-3 small text-muted">
@@ -547,6 +613,33 @@ const HotelDisplay = () => {
           </div>
         )}
       </main>
+
+      {/* Edit Hotel Modal */}
+      <Modal isOpen={!!editHotel} onRequestClose={closeEditHotel} ariaHideApp={false}>
+        <h2>Edit Hotel</h2>
+        <form onSubmit={submitEditHotel}>
+          <input name="name" value={editHotelData.name || ''} onChange={handleEditHotelChange} placeholder="Name" required />
+          <input name="location" value={editHotelData.location || ''} onChange={handleEditHotelChange} placeholder="Location" required />
+          <input name="rating" value={editHotelData.rating || ''} onChange={handleEditHotelChange} placeholder="Rating" required />
+          <input name="description" value={editHotelData.description || ''} onChange={handleEditHotelChange} placeholder="Description" />
+          <button type="submit">Save</button>
+          <button type="button" onClick={closeEditHotel}>Cancel</button>
+        </form>
+      </Modal>
+
+      {/* Edit Room Modal */}
+      <Modal isOpen={!!editRoom} onRequestClose={closeEditRoom} ariaHideApp={false}>
+        <h2>Edit Room</h2>
+        <form onSubmit={submitEditRoom}>
+          <input name="roomType" value={editRoomData.roomType || ''} onChange={handleEditRoomChange} placeholder="Room Type" required />
+          <input name="pricePerNight" value={editRoomData.pricePerNight || ''} onChange={handleEditRoomChange} placeholder="Price Per Night" required />
+          <input name="numberOfGuest" value={editRoomData.numberOfGuest || ''} onChange={handleEditRoomChange} placeholder="Number of Guests" required />
+          <input name="numberOfBeds" value={editRoomData.numberOfBeds || ''} onChange={handleEditRoomChange} placeholder="Number of Beds" required />
+          <input name="description" value={editRoomData.description || ''} onChange={handleEditRoomChange} placeholder="Description" />
+          <button type="submit">Save</button>
+          <button type="button" onClick={closeEditRoom}>Cancel</button>
+        </form>
+      </Modal>
     </div>
   );
 };

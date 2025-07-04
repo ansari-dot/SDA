@@ -194,7 +194,7 @@
                       $match: {
                           destination: { $regex: new RegExp(destination, "i") },
                           price: { $lte: parseInt(priceRange) },
-                          company: { $regex: new RegExp(company, "i") },
+                          companyName: { $regex: new RegExp(company, "i") },
                       },
                   },
 
@@ -302,9 +302,9 @@
 
       // Update Package Price
       static async updatePackage(req, res) {
-          const { price } = req.body;
           const user_id = req.user;
-          const { id } = req.params;
+          const { id } = req.params; // id is the subdocument _id of the package
+          const update = req.body;
 
           try {
               const user = await User.findById(user_id);
@@ -312,21 +312,77 @@
                   return res.status(403).json({ message: "Unauthorized" });
               }
 
-              const found = await PackageModel.findById(id);
-              if (!found || !found.package || found.package.length === 0) {
+              // Find the user's package document
+              const packageDoc = await PackageModel.findOne({ user: user_id });
+              if (!packageDoc || !packageDoc.package || packageDoc.package.length === 0) {
                   return res.status(404).json({ message: "Package not found" });
               }
 
-              found.package[0].price = price; // Only updates the first item
-              await found.save();
+              // Find the specific package by subdocument _id
+              const pkg = packageDoc.package.id(id);
+              if (!pkg) {
+                  return res.status(404).json({ message: "Package not found" });
+              }
 
-              return res.status(200).json({
-                  message: "Package price updated successfully",
-                  data: found.package[0]
+              // Update all fields present in the request body
+              Object.keys(update).forEach(key => {
+                  pkg[key] = update[key];
               });
 
+              await packageDoc.save();
+
+              return res.status(200).json({
+                  message: "Package updated successfully",
+                  data: pkg
+              });
           } catch (err) {
               return res.status(500).json({ message: "Error updating package", error: err.message });
+          }
+      }
+
+      static async adminUpdatePackage(req, res) {
+          const { id } = req.params; // subdocument _id
+          const update = req.body;
+          try {
+              // Find the package document containing the subdocument
+              const packageDoc = await PackageModel.findOne({ 'package._id': id });
+              if (!packageDoc) return res.status(404).json({ message: 'Package not found' });
+              const pkg = packageDoc.package.id(id);
+              if (!pkg) return res.status(404).json({ message: 'Package not found' });
+              Object.keys(update).forEach(key => { pkg[key] = update[key]; });
+              await packageDoc.save();
+              return res.status(200).json({ message: 'Package updated by admin', data: pkg });
+          } catch (err) {
+              return res.status(500).json({ message: 'Error updating package', error: err.message });
+          }
+      }
+
+      static async adminDeletePackage(req, res) {
+          const { id } = req.params; // subdocument _id
+          try {
+              const packageDoc = await PackageModel.findOne({ 'package._id': id });
+              if (!packageDoc) return res.status(404).json({ message: 'Package not found' });
+              const result = await PackageModel.updateOne({ 'package._id': id }, { $pull: { package: { _id: id } } });
+              if (!result.modifiedCount) return res.status(404).json({ message: 'Package not found or not deleted' });
+              return res.status(200).json({ message: 'Package deleted by admin' });
+          } catch (err) {
+              return res.status(500).json({ message: 'Error deleting package', error: err.message });
+          }
+      }
+
+      // Get all packages as a flat array with companyName
+      static async getAllFlatPackages(req, res) {
+          try {
+              const allDocs = await PackageModel.find();
+              const flatPackages = allDocs.flatMap(pkgDoc =>
+                  (pkgDoc.package || []).map(p => ({
+                      ...p.toObject(),
+                      companyName: p.companyName || pkgDoc.companyName || '',
+                  }))
+              );
+              return res.status(200).json({ packages: flatPackages });
+          } catch (err) {
+              return res.status(500).json({ message: 'Error fetching flat packages', error: err.message });
           }
       }
   }

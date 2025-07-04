@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+body {
+  background: var(--background-dark);
+  color: var(--text-secondary);
+  font-family: 'Inter', Arial, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+}
+
+button, .btn {
+  background: var(--button-yellow);
+  color: var(--button-text);
+  border: none;
+}
+
+.card, .glass-card {
+  background: var(--jungle-green-2);
+  color: var(--text-secondary);
+}
+
+input, select, textarea {
+  background: var(--jungle-green-3);
+  color: var(--text-secondary);
+  border: 1px solid var(--primary-yellow);
+}
+
+a, .link {
+  color: var(--primary-yellow);
+}

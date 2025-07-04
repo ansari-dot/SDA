@@ -43,7 +43,7 @@ export default function PackagePage() {
   const fetchPackages = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:2000/api/package/get");
+      const response = await axios.get("http://localhost:2000/api/package/allflat");
       setPackages(response.data.packages || []);
     } catch (error) {
       setError("Failed to fetch packages. Please try again.");
@@ -65,37 +65,36 @@ export default function PackagePage() {
   };
 
   // Handle filter submission
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      setLoading(true);
-      const response = await axios.post(
-        "http://localhost:2000/api/packages/filter",
-        filters,
-        { withCredentials: true }
-      );
-      if (response.data.success) {
-        setPackages(response.data.filteredPackages || []);
-        setCurrentPage(1);
-      }
-    } catch (error) {
-      setError("Failed to apply filters. Please try again.");
-      console.error("Filter error:", error);
-    } finally {
-      setLoading(false);
-    }
+    setCurrentPage(1);
   };
 
-  // Clear filters
-  const handleClear = async () => {
-    setFilters({
-      destination: "",
-      priceRange: 10000,
-      company: "",
-    });
-    setSelectedCompany("");
-    await fetchPackages();
-  };
+  // Filtered packages based on hero section filters
+  const filteredPackages = packages.filter((item) => {
+    const destinationMatch = !filters.destination || (item.destination || '').toLowerCase().includes(filters.destination.toLowerCase());
+    const priceMatch = !filters.priceRange || item.price <= filters.priceRange;
+    const companyMatch = !filters.company || (item.companyName || '').toLowerCase() === filters.company.toLowerCase();
+    return destinationMatch && priceMatch && companyMatch;
+  });
+
+  // Use filteredPackages for display if any filter is set, else use allPackages
+  const displayPackages = filters.destination || filters.priceRange !== 10000 || filters.company ? filteredPackages : packages;
+  const indexOfLast = currentPage * packagesPerPage;
+  const indexOfFirst = indexOfLast - packagesPerPage;
+  const currentPackages = displayPackages.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(displayPackages.length / packagesPerPage);
+
+  // Build unique company names from package data
+  const uniqueCompanyNames = Array.from(
+    new Set(packages.map((p) => (p.companyName || '').trim()).filter(Boolean))
+  );
+
+  // Process packages with company assignment
+  const allPackages = packages.filter(
+    (item) =>
+      !selectedCompany || (item.companyName || '').toLowerCase() === selectedCompany.toLowerCase()
+  );
 
   // Handle sort change
   const handleSortChange = async (e) => {
@@ -132,29 +131,6 @@ export default function PackagePage() {
     setCurrentPage(1);
   };
 
-  // Process packages with company assignment
-  const allPackages = packages.flatMap((pkg) => {
-    const items = Array.isArray(pkg.package) ? pkg.package : [pkg];
-    return items
-      .filter(
-        (item) => !selectedCompany || item.companyName === selectedCompany
-      )
-      .map((item) => ({
-        ...item,
-        companyName:
-          item.companyName ||
-          pkg.companyName ||
-          companyNames.find((c) => c.BusinessName === item.companyName)
-            ?.BusinessName ||
-          "Unknown Company",
-      }));
-  });
-
-  const indexOfLast = currentPage * packagesPerPage;
-  const indexOfFirst = indexOfLast - packagesPerPage;
-  const currentPackages = allPackages.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(allPackages.length / packagesPerPage);
-
   return (
     <>
       {/* Bootstrap CSS */}
@@ -173,6 +149,17 @@ export default function PackagePage() {
 
       <style>{`
         :root {
+          --background-dark: #101510;
+          --jungle-green-1: #1a3a1a;
+          --jungle-green-2: #254d25;
+          --jungle-green-3: #2e5932;
+          --primary-yellow: #ffe100;
+          --text-primary: #ffe100;
+          --text-secondary: #fff;
+          --button-yellow: #ffe100;
+          --button-text: #101510;
+          --accent-green: #00c853;
+          --overlay-dark: rgba(0,0,0,0.7);
           --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
           --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
@@ -181,13 +168,44 @@ export default function PackagePage() {
           --glass-border: rgba(255, 255, 255, 0.2);
         }
 
-        * {
-          font-family: 'Inter', sans-serif;
+        body {
+          background: var(--background-dark);
+          color: var(--text-secondary);
+          min-height: 100vh;
         }
 
-        body {
-          background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-          min-height: 100vh;
+        h1, h2, h3, h4, h5, h6 {
+          color: var(--text-primary);
+        }
+
+        button, .btn {
+          background: var(--button-yellow);
+          color: var(--button-text);
+          border: none;
+        }
+
+        .navbar, .topbar, .footer {
+          background: #000;
+          color: var(--text-secondary);
+        }
+
+        .card, .glass-card {
+          background: var(--jungle-green-2);
+          color: var(--text-secondary);
+        }
+
+        input, select, textarea {
+          background: var(--jungle-green-3);
+          color: var(--text-secondary);
+          border: 1px solid var(--primary-yellow);
+        }
+
+        a, .link {
+          color: var(--primary-yellow);
+        }
+
+        * {
+          font-family: 'Inter', sans-serif;
         }
 
         .hero-section {
@@ -579,13 +597,17 @@ export default function PackagePage() {
                       <label className="form-label text-white fw-semibold mb-2">
                         Company
                       </label>
-                      <input
+                      <select
                         name="company"
                         value={filters.company}
                         onChange={handleChange}
                         className="form-control filter-input"
-                        placeholder="Any Company"
-                      />
+                      >
+                        <option value="">Any Company</option>
+                        {uniqueCompanyNames.map((company, idx) => (
+                          <option key={idx} value={company}>{company}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
 
@@ -600,7 +622,14 @@ export default function PackagePage() {
                     <button
                       type="button"
                       className="btn btn-glass"
-                      onClick={handleClear}
+                      onClick={() => {
+                        setFilters({
+                          destination: "",
+                          priceRange: 10000,
+                          company: "",
+                        });
+                        setSelectedCompany("");
+                      }}
                       disabled={loading}>
                       Clear Filters
                     </button>
@@ -646,7 +675,7 @@ export default function PackagePage() {
             <div className="row align-items-center mb-5">
               <div className="col-md-8">
                 <h2 className="section-title">
-                  {allPackages.length} Packages Found
+                  {displayPackages.length} Packages Found
                 </h2>
                 <p className="text-muted fs-5">
                   Discover your perfect adventure
@@ -673,20 +702,18 @@ export default function PackagePage() {
             {/* Company Names Section */}
             <div className="company-box-container">
               <div
-                className={`company-box ${
-                  selectedCompany === "" ? "active" : ""
-                }`}
-                onClick={() => handleCompanyFilter("")}>
+                className={`company-box ${selectedCompany === '' ? 'active' : ''}`}
+                onClick={() => handleCompanyFilter('')}
+              >
                 All
               </div>
-              {companyNames.map((company, index) => (
+              {uniqueCompanyNames.map((company, index) => (
                 <div
                   key={index}
-                  className={`company-box ${
-                    selectedCompany === company.BusinessName ? "active" : ""
-                  }`}
-                  onClick={() => handleCompanyFilter(company.BusinessName)}>
-                  {company.BusinessName}
+                  className={`company-box ${selectedCompany === company ? 'active' : ''}`}
+                  onClick={() => handleCompanyFilter(company)}
+                >
+                  {company}
                 </div>
               ))}
             </div>
@@ -722,8 +749,11 @@ export default function PackagePage() {
                           <i
                             className="bi bi-building"
                             style={{ color: "#667eea" }}></i>
-
-                          <span className="ms-2 fw-semibold">
+                          <span
+                            className="ms-2 fw-semibold text-primary"
+                            style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                            onClick={() => navigate(`/company/${item.companyName || 'Unknown'}`)}
+                          >
                             {item.companyName || "Unknown"}
                           </span>
                         </div>

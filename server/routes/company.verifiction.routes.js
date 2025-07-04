@@ -15,4 +15,8 @@ router.get('/company', (req, res) =>
 router.get('/get/ownerCompany', authorized, verification.getOwnerCompany);
 // route to delete the owner the company;
 router.delete('/delete/ownerCompany', authorized, verification.deleteOwnerCompany);
+// Admin: approve company
+router.post('/company/approve', authorized, (req, res) => verification.approveCompany(req, res));
+// Admin: reject company
+router.post('/company/reject', authorized, (req, res) => verification.rejectCompany(req, res));
 export default router;

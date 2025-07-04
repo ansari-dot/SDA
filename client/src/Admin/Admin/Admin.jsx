@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AdminPlace from "./AdminPlace";
+import { Link } from 'react-router-dom';
+
 const Admin = () => {
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -196,6 +198,9 @@ const Admin = () => {
           </tbody>
         </table>
       )}
+      <Link to="/admin/payments">
+        <button>Manage Payments</button>
+      </Link>
       <AdminPlace />
     </div>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -7,6 +7,22 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 export default function PackageDetail() {
   const navigate = useNavigate();
   const { packageDetail } = useSelector((state) => state.package);
+  const [relatedPackages, setRelatedPackages] = useState([]);
+
+  useEffect(() => {
+    const fetchRelated = async () => {
+      if (!packageDetail.companyName) return;
+      try {
+        const res = await fetch('http://localhost:2000/api/package/get');
+        const data = await res.json();
+        const all = data.packages || [];
+        const filtered = all.flatMap(pkg => Array.isArray(pkg.package) ? pkg.package : [pkg])
+          .filter(p => (p.companyName || pkg.companyName) === packageDetail.companyName && p._id !== packageDetail._id);
+        setRelatedPackages(filtered);
+      } catch {}
+    };
+    fetchRelated();
+  }, [packageDetail]);
 
   if (!packageDetail || Object.keys(packageDetail).length === 0) {
     return (
@@ -271,6 +287,45 @@ export default function PackageDetail() {
           </div>
         </div>
       </div>
+
+      {/* Related Packages Section */}
+      {relatedPackages.length > 0 && (
+        <div className="container mt-5">
+          <h4 className="mb-4">Other Packages from {packageDetail.companyName}</h4>
+          <div className="row g-4">
+            {relatedPackages.map((item, idx) => (
+              <div className="col-lg-3 col-md-4 col-6" key={idx}>
+                <div className="card package-card h-100">
+                  <div
+                    className="package-img"
+                    style={{
+                      backgroundImage: `url(${
+                        item.image
+                          ? `http://localhost:2000/${item.image.replace('\\', '/')}`
+                          : 'https://via.placeholder.com/400x250'
+                      })`,
+                    }}
+                  ></div>
+                  <div className="card-body p-3 d-flex flex-column">
+                    <div className="d-flex align-items-center mb-2">
+                      <i className="bi bi-building" style={{ color: '#667eea' }}></i>
+                      <span className="ms-2 fw-semibold">{item.companyName}</span>
+                    </div>
+                    <span className="package-type mb-2">{item.packageType || 'Standard'} Tour</span>
+                    <div className="price-tag mb-2">Rs {item.price?.toLocaleString() || 'N/A'}</div>
+                    <button
+                      className="btn btn-view-details mt-auto"
+                      onClick={() => window.location.href = `/package/${item.destination}`}
+                    >
+                      View Details
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

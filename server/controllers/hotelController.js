@@ -94,4 +94,16 @@ export class HotelController {
       next(err);
     }
   }
+
+  static async updateHotel(req, res, next) {
+    try {
+      const userId = req.user;
+      const { hotelId } = req.params;
+      const update = req.body;
+      const hotel = await HotelService.updateHotel(userId, hotelId, update);
+      res.status(200).json({ message: 'Hotel updated successfully', hotel });
+    } catch (err) {
+      next(err);
+    }
+  }
 } 

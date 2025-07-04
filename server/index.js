@@ -18,6 +18,8 @@
   import companyVerificationRoutes from './routes/company.verifiction.routes.js'
   import hotelVerificationRoutes from './routes/hotel.verification.js'
   import roomRoutes from './routes/room.routes.js'
+  import paymentRoutes from './routes/payment.routes.js'
+  import tourBookingRoutes from './routes/tourBooking.routes.js'
 
   // Environment config
   dotenv.config();
@@ -65,6 +67,8 @@
   app.use('/api', companyVerificationRoutes);
   app.use('/api', hotelVerificationRoutes);
   app.use('/api', roomRoutes);
+  app.use('/api', paymentRoutes);
+  app.use('/api', tourBookingRoutes);
 
   // Start server
   const port = process.env.PORT || 2000;

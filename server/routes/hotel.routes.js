@@ -17,5 +17,6 @@ router.get('/get/rooms/:hotelId', authorized, HotelController.getRoom);
 router.delete('/hotel/:id', authorized, HotelController.deleteHotel);
 router.delete('/hotel/:hotelId/room/:roomId', authorized, HotelController.deleteRoom);
 router.post('/hotel/:hotelId/room', authorized, uploadMultipleImages, HotelController.addRoom);
+router.patch('/hotel/:hotelId', authorized, HotelController.updateHotel);
 
 export default router;

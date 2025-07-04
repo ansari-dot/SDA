@@ -132,6 +132,16 @@ class HotelService {
     await room.save();
     return room;
   }
+
+  static async updateHotel(userId, hotelId, update) {
+    const hotel = await Hotel.findOne({ _id: hotelId, userId });
+    if (!hotel) throw new Error('Hotel not found or not authorized');
+    Object.keys(update).forEach(key => {
+      hotel[key] = update[key];
+    });
+    await hotel.save();
+    return hotel;
+  }
 }
 
 export default HotelService; 
